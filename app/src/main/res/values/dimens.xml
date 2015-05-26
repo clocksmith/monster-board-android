@@ -7,4 +7,5 @@
   <dimen name="button_height">56dp</dimen>
   <dimen name="icon_size">24dp</dimen>
   <dimen name="icon_padding">16dp</dimen>
+  <dimen name="spinner_item_dropdown_height">80dp</dimen>
 </resources>
