@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Shades of gray -->
+  <color name="white">#ffffff</color>
+  <color name="off_white_lighter">#f8f8f8</color>
+  <color name="off_white">#f0f0f0</color>
+  <color name="off_white_darker">#e8e8e8</color>
+  <color name="light_gray">#a8a8a8</color>
+  <color name="gray">#808080</color>
+  <color name="dark_gray">#585858</color>
+  <color name="not_quite_black">#303030</color>
+  <color name="black">#000000</color>
+
+  <color name="transparent">#00000000</color>
+  <color name="white_half_transparent">#80ffffff</color>
+  <color name="gray_half_transparent">#80808080</color>
+  <color name="dark_gray_half_transparent">#80585858</color>
+  <color name="not_quite_black_half_transparent">#80303030</color>
+  <color name="white_70_opacity">#b3ffffff</color>
+
+  <!-- Primary colors -->
+  <color name="primary_color">#5F50A4</color>
+  <color name="primary_color_dark">#2B2257</color>
+  <color name="primary_color_light">#9F8DF0</color>
+  <color name="primary_color_half_transparent">#885F50A4</color>
+
+  <!-- Accent colors -->
+  <color name="accent_color">#FFC107</color>
+  <color name="accent_color_highlight">#FFD740</color>
+
+  <color name="icon_color">@color/white</color>
+  <color name="icon_ripple_color">@color/gray_half_transparent</color>
+</resources>

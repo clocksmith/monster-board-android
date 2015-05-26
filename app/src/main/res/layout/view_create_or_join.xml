@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/view_create_or_join_buttonContainer"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/view_create_or_join_createButton"
+            android:text="@string/create_game"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"/>
+        <Button
+            android:id="@+id/view_create_or_join_joinButton"
+            android:text="@string/join_game"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="20dp"/>
+    </LinearLayout>
+
+  <FrameLayout
+      android:id="@+id/view_create_or_join_roomNumberInputContainer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+    <EditText
+        android:id="@+id/view_create_or_join_roomNumberInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:maxLength="6"
+        android:inputType="number"/>
+    <ImageView
+        android:id="@+id/view_create_or_join_closeIcon"
+        android:src="@drawable/ic_action_close"
+        android:layout_width="@dimen/button_height"
+        android:layout_height="@dimen/button_height"
+        android:layout_gravity="start"
+        android:padding="@dimen/icon_padding"/>
+  </FrameLayout>
+</FrameLayout>

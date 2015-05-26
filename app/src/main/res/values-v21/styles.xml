@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ScorecardTheme" parent="Theme.AppCompat">
+        <item name="android:colorButtonNormal">@color/primary_color</item>
+
+        <item name="android:colorControlNormal">@color/accent_color</item>
+        <item name="android:colorControlActivated">@color/accent_color_highlight</item>
+        <item name="android:colorControlHighlight">@color/accent_color_highlight</item>
+    </style>
+</resources>

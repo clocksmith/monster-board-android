@@ -1,0 +1,10 @@
+<resources>
+  <string name="app_name">Scoreboard</string>
+
+  <string name="hello_world">Hello world!</string>
+  <string name="action_settings">Settings</string>
+
+  <string name="player_name">PLAYER NAME</string>
+  <string name="create_game">CREATE GAME</string>
+  <string name="join_game">JOIN GAME</string>
+</resources>
