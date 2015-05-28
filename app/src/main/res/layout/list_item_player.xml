@@ -37,14 +37,14 @@
       android:layout_height="match_parent"
       android:layout_weight="1"
       android:gravity="center">
-    <com.gamesmith.scoreboard.common.ScoreboardNumberPicker
+    <com.gamesmith.scoreboard.room.HpNumberPicker
         android:id="@+id/list_item_player_hp"
         android:layout_width="@dimen/list_item_user_picker_width"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/default_padding"
         android:scaleX="0.85"
         android:scaleY="0.85"/>
-    <com.gamesmith.scoreboard.common.ScoreboardNumberPicker
+    <com.gamesmith.scoreboard.room.VpNumberPicker
         android:id="@+id/list_item_player_vp"
         android:layout_width="@dimen/list_item_user_picker_width"
         android:layout_height="wrap_content"

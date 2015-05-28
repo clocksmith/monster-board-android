@@ -20,8 +20,8 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
   private TextView mPlayerName;
   private ImageView mMonsterImage;
   private TextView mMonsterName;
-  private ScoreboardNumberPicker mHp;
-  private ScoreboardNumberPicker mVp;
+  private HpNumberPicker mHp;
+  private VpNumberPicker mVp;
 
   public UserRecyclerViewHolder(View itemView) {
     super(itemView);
@@ -30,8 +30,8 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
     mPlayerName = (TextView) itemView.findViewById(R.id.list_item_player_playerName);
     mMonsterImage = (ImageView) itemView.findViewById(R.id.list_item_player_monsterImage);
     mMonsterName = (TextView) itemView.findViewById(R.id.list_item_player_monsterName);
-    mHp = (ScoreboardNumberPicker) itemView.findViewById(R.id.list_item_player_hp);
-    mVp = (ScoreboardNumberPicker) itemView.findViewById(R.id.list_item_player_vp);
+    mHp = (HpNumberPicker) itemView.findViewById(R.id.list_item_player_hp);
+    mVp = (VpNumberPicker) itemView.findViewById(R.id.list_item_player_vp);
 
     mHp.setEnabled(false);
     mVp.setEnabled(false);
