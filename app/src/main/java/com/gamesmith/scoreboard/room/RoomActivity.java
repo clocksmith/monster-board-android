@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.firebase.client.DataSnapshot;
@@ -65,7 +66,10 @@ public class RoomActivity extends AppCompatActivity {
     mRecyclerView.setHasFixedSize(false);
 
     if (getSupportActionBar() != null) {
-      getSupportActionBar().setTitle("Room: " + mRoomNumberString);
+      getSupportActionBar().setDisplayShowCustomEnabled(true);
+      getSupportActionBar().setCustomView(new RoomActionBar(this, mRoomNumber));
+      getSupportActionBar().setTitle("");
+      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
@@ -81,6 +85,17 @@ public class RoomActivity extends AppCompatActivity {
         // TODO(clocksmith)
       }
     });
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        finish();
+        return true;
+    }
+
+    return super.onOptionsItemSelected(item);
   }
 
   private void update(DataSnapshot snapshot) {

@@ -23,6 +23,8 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
   private HpNumberPicker mHp;
   private VpNumberPicker mVp;
 
+  private boolean mFirstUpdate;
+
   public UserRecyclerViewHolder(View itemView) {
     super(itemView);
     mContext = itemView.getContext();
@@ -33,6 +35,8 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
     mHp = (HpNumberPicker) itemView.findViewById(R.id.list_item_player_hp);
     mVp = (VpNumberPicker) itemView.findViewById(R.id.list_item_player_vp);
 
+    mFirstUpdate = true;
+
     mHp.setEnabled(false);
     mVp.setEnabled(false);
   }
@@ -41,7 +45,20 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
     mPlayerName.setText(player.name);
     mMonsterImage.setImageDrawable(mContext.getDrawable(Monster.getEnum(player.monster).getSmallImageResId()));
     mMonsterName.setText(player.monster);
-    mHp.setValue(player.hp);
-    mVp.setValue(player.vp);
+    if (mFirstUpdate) {
+      mHp.setValue(player.hp);
+      mVp.setValue(player.vp);
+      mFirstUpdate = false;
+    } else {
+      updatePicker(mHp, player.hp);
+      updatePicker(mVp, player.vp);
+    }
+  }
+
+  private void updatePicker(ScoreboardNumberPicker picker, int newValue) {
+    int numIncrements = Math.abs(newValue - picker.getValue());
+    for (int i = 0; i < numIncrements; i++) {
+      picker.changeValueByOne(picker.getValue() < newValue);
+    }
   }
 }

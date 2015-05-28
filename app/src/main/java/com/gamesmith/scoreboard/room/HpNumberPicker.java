@@ -17,5 +17,6 @@ public class HpNumberPicker extends ScoreboardNumberPicker {
     this.setMaxValue(Constants.MAX_HP);
     this.setDividerColor(getResources().getColor(R.color.hp_color));
     this.setTextColor(getResources().getColor(R.color.hp_color));
+    this.setWrapSelectorWheel(false);
   }
 }

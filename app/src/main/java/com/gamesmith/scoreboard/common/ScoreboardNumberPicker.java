@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * For this: http://stackoverflow.com/questions/24233556/changing-numberpicker-divider-color
  * Based on this: http://stackoverflow.com/a/20291416/2915480
@@ -22,7 +25,6 @@ public class ScoreboardNumberPicker extends NumberPicker {
 
     this.setMinValue(0);
     this.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-    this.setWrapSelectorWheel(false);
   }
 
   public void setDividerColor(int color) {
@@ -66,6 +68,17 @@ public class ScoreboardNumberPicker extends NumberPicker {
           Log.e(TAG, "Nope", e);
         }
       }
+    }
+  }
+
+  public void changeValueByOne(final boolean increment) {
+    Method method;
+    try {
+      method = NumberPicker.class.getDeclaredMethod("changeValueByOne", boolean.class);
+      method.setAccessible(true);
+      method.invoke(this, increment);
+    } catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+      Log.e(TAG, "Nope", e);
     }
   }
 }

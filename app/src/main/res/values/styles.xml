@@ -12,6 +12,9 @@
 
     <item name="colorButtonNormal">@color/primary_color</item>
 
+    <item name="android:actionMenuTextColor">@color/primary_color</item>
+    <item name="actionMenuTextColor">@color/primary_color</item>
+
     <item name="android:textViewStyle">@style/ScoreboardTheme.TextViewStyle</item>
 
     <item name="android:windowContentTransitions">true</item>
