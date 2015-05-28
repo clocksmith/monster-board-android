@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.firebase.client.DataSnapshot;
@@ -15,12 +12,14 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
-import com.gamesmith.scoreboard.firebase.User;
+import com.gamesmith.scoreboard.common.Monster;
+import com.gamesmith.scoreboard.firebase.FirebaseUtils;
+import com.gamesmith.scoreboard.firebase.Player;
 import com.gamesmith.scoreboard.common.BusProvider;
 import com.gamesmith.scoreboard.common.Constants;
 import com.gamesmith.scoreboard.R;
 import com.gamesmith.scoreboard.room.RoomActivity;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -33,8 +32,8 @@ public class StartActivity extends Activity {
   private Firebase mFirebase;
   private Firebase mFirebaseStatic;
   private List<String> mDefaultPlayers;
-  private List<String> mMonsters;
   private Random mRandom;
+  private int mJoiningPlayerId;
 
   private EditText mPlayerInput;
   private CreateOrJoinView mCreateOrJoinView;
@@ -57,7 +56,6 @@ public class StartActivity extends Activity {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         mDefaultPlayers = (List<String>) dataSnapshot.child("playerNames").getValue();
-        mMonsters = (List<String>) dataSnapshot.child("monstersNewYork").getValue();
         if (mPlayerInput.getText() == null || mPlayerInput.getText().toString().isEmpty()) {
           mPlayerInput.setText(mDefaultPlayers.get(mRandom.nextInt(mDefaultPlayers.size())));
         }
@@ -65,58 +63,68 @@ public class StartActivity extends Activity {
 
       @Override
       public void onCancelled(FirebaseError firebaseError) {
-
+        // TODO(clocksmith)
       }
     });
   }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu_start, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    int id = item.getItemId();
-    if (id == R.id.action_settings) {
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
-  }
-
-  private void attemptToCreateRoom() {
+  private void createRoom() {
     final ProgressDialog progressDialog = ProgressDialog.show(this, "Creating room", "hold tight...");
+    final int roomNumber = getRandomRoomNumber();
 
-    final int pin = mRandom.nextInt(Constants.MAX_PIN - Constants.MIN_PIN + 1) + Constants.MIN_PIN;
-    mFirebase.child("rooms").runTransaction(new Transaction.Handler() {
+    FirebaseUtils.getRooms(mFirebase).runTransaction(new Transaction.Handler() {
       @Override
       public Transaction.Result doTransaction(MutableData currentData) {
-        String pinString = String.valueOf(pin);
-        if (currentData.hasChild(pinString) && !((List) currentData.child(pinString).getValue()).isEmpty()) {
+        String roomNumberString = String.valueOf(roomNumber);
+        if (currentData.hasChild(roomNumberString)
+            && !((List) currentData.child(roomNumberString).getValue()).isEmpty()) {
           handleRoomTaken();
-          Transaction.abort();
+          return Transaction.abort();
         } else {
-          User user = new User();
-          user.name = mPlayerInput.getText().toString();
-          user.monster = mMonsters.get(mRandom.nextInt(mMonsters.size()));
-          user.hp = Constants.STARTING_HP;
-          user.vp = Constants.STARTING_VP;
-          List<User> users = Lists.newArrayList();
-          users.add(user);
-          currentData.child(pinString).setValue(users);
+          List<Player> players = ImmutableList.of(getNewUser());
+          currentData.child(roomNumberString).setValue(players);
+          return Transaction.success(currentData);
         }
-        return Transaction.success(currentData);
       }
 
       @Override
       public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
         progressDialog.dismiss();
-        Log.d(TAG, "currentData" + currentData.toString());
-        Intent intent = new Intent(StartActivity.this, RoomActivity.class);
-        intent.putExtra(Constants.PLAYER_ID, 0);
-        intent.putExtra(Constants.ROOM_NUMBER, pin);
-        startActivity(intent);
+        startRoomActivity(roomNumber, 0);
+      }
+    });
+  }
+
+  private void joinRoom(final int roomNumber) {
+    final ProgressDialog progressDialog = ProgressDialog.show(this, "Joining room", "hold tight...");
+
+    FirebaseUtils.getRooms(mFirebase).child(String.valueOf(roomNumber)).runTransaction(new Transaction.Handler() {
+      @Override
+      public Transaction.Result doTransaction(MutableData currentData) {
+        if (currentData != null && currentData.hasChildren()) {
+          Player newPlayer = getNewUser();
+
+          int highestPlayerId = -1;
+          for (MutableData playerData : currentData.getChildren()) {
+            int playerId = Integer.parseInt(playerData.getKey());
+            if (playerId > highestPlayerId) {
+              highestPlayerId = playerId;
+            }
+          }
+          mJoiningPlayerId = highestPlayerId + 1;
+
+          currentData.child(String.valueOf(mJoiningPlayerId)).setValue(newPlayer);
+          return Transaction.success(currentData);
+        } else {
+          handleInvalidRoom();
+          return Transaction.abort();
+        }
+      }
+
+      @Override
+      public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
+        progressDialog.dismiss();
+        startRoomActivity(roomNumber, mJoiningPlayerId);
       }
     });
   }
@@ -125,8 +133,37 @@ public class StartActivity extends Activity {
     // TODO(clocksmith): Do something in this extremely rare case.
   }
 
+  public void handleInvalidRoom() {
+    // TODO(clocksmith)
+  }
+
+  private int getRandomRoomNumber() {
+    return mRandom.nextInt(Constants.MAX_PIN - Constants.MIN_PIN + 1) + Constants.MIN_PIN;
+  }
+
+  private Player getNewUser() {
+    Player newPlayer = new Player();
+    newPlayer.name = mPlayerInput.getText().toString();
+    newPlayer.monster = Monster.values()[mRandom.nextInt(Monster.values().length)].getName();
+    newPlayer.hp = Constants.STARTING_HP;
+    newPlayer.vp = Constants.STARTING_VP;
+    return newPlayer;
+  }
+
+  private void startRoomActivity(int roomNumber, int playerId) {
+    Intent intent = new Intent(StartActivity.this, RoomActivity.class);
+    intent.putExtra(Constants.PLAYER_ID, playerId);
+    intent.putExtra(Constants.ROOM_NUMBER, roomNumber);
+    startActivity(intent);
+  }
+
   @Subscribe
   public void on(CreateOrJoinView.CreateButtonClickedEvent event) {
-    attemptToCreateRoom();
+    createRoom();
+  }
+
+  @Subscribe
+  public void on(CreateOrJoinView.RoomNumberInputFinishedEvent event) {
+    joinRoom(event.roomNumber);
   }
 }

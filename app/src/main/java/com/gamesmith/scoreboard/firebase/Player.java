@@ -3,11 +3,11 @@ package com.gamesmith.scoreboard.firebase;
 /**
  * Created by clocksmith on 5/25/15.
  */
-public class User {
+public class Player {
   public String name;
   public String monster;
-  public Integer hp;
-  public Integer vp;
+  public int hp;
+  public int vp;
 
-  public User() {}
+  public Player() {}
 }

@@ -30,16 +30,16 @@ public class CreateOrJoinView extends FrameLayout {
 
   public class CreateButtonClickedEvent {}
 
-  public class DonePinInputButtonClickedEvent {
-    public final int pin;
+  public class RoomNumberInputFinishedEvent {
+    public final int roomNumber;
 
-    public DonePinInputButtonClickedEvent(int pin) {
-      this.pin = pin;
+    public RoomNumberInputFinishedEvent(int roomNumber) {
+      this.roomNumber = roomNumber;
     }
   }
 
   private Context mContext;
-  private boolean mIsPinInputVisible;
+  private boolean mIsRoomNumberInputVisible;
 
   private LinearLayout mButtonContainer;
   private Button mCreateButton;
@@ -60,7 +60,7 @@ public class CreateOrJoinView extends FrameLayout {
     super(context, attrs, defStyleAttr);
 
     mContext = context;
-    mIsPinInputVisible = false;
+    mIsRoomNumberInputVisible = false;
 
     LayoutInflater layoutInflater = LayoutInflater.from(context);
     View view = layoutInflater.inflate(R.layout.view_create_or_join, this, true);
@@ -89,10 +89,10 @@ public class CreateOrJoinView extends FrameLayout {
     mJoinButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (mIsPinInputVisible) {
-          hidePinInput();
+        if (mIsRoomNumberInputVisible) {
+          hideRoomNumberInput();
         } else {
-          showPinInput();
+          showRoomNumberInput();
         }
       }
     });
@@ -100,14 +100,13 @@ public class CreateOrJoinView extends FrameLayout {
     mCloseIcon.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        hidePinInput();
+        hideRoomNumberInput();
       }
     });
 
     mRoomNumberInput.addTextChangedListener(new TextWatcher() {
       @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -115,41 +114,36 @@ public class CreateOrJoinView extends FrameLayout {
         if (mRoomNumberInput.getText() != null) {
           inputText = mRoomNumberInput.getText().toString();
         }
-        Log.d(TAG, "inputText: " + inputText);
         if (inputText.length() == 6) {
+          KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput);
           try {
-            int pin = Integer.parseInt(inputText);
-            BusProvider.getInstance().post(new DonePinInputButtonClickedEvent(pin));
+            int roomNumber = Integer.parseInt(inputText);
+            BusProvider.getInstance().post(new RoomNumberInputFinishedEvent(roomNumber));
           } catch (NumberFormatException e) {
             Log.e(TAG, "bad number format: " + inputText);
           }
-
         }
       }
 
       @Override
-      public void afterTextChanged(Editable s) {
-      }
+      public void afterTextChanged(Editable s) {}
     });
   }
 
-  private void hidePinInput() {
-    Log.d(TAG, "hidePinInput");
-    mIsPinInputVisible = false;
-    KeyboardUtils.hideKeyboard((Activity) mContext, getRoomNumberEditText());
+  private void hideRoomNumberInput() {
+    mIsRoomNumberInputVisible = false;
+    KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput);
     animate(-mButtonContainer.getWidth(), 0, 0, mRoomNumberInputContainer.getWidth());
   }
 
-  private void showPinInput() {
-    Log.d(TAG, "showPinInput");
-    mIsPinInputVisible = true;
+  private void showRoomNumberInput() {
+    mIsRoomNumberInputVisible = true;
     KeyboardUtils.forceShowKeyboard((Activity) mContext);
     mRoomNumberInput.requestFocus();
     animate(0, -mButtonContainer.getWidth(), mRoomNumberInputContainer.getWidth(), 0);
   }
 
   private void animate(int buttonStartX, int buttonEndX, int pinStartX, int pinEndX) {
-    Log.d(TAG, "buttonStartX: " + buttonStartX + " buttonEndX: " + buttonEndX + " pinStartX: " + pinStartX + " pinEndX: " + pinEndX);
     ObjectAnimator buttonAnimator = ObjectAnimator.ofFloat(mButtonContainer, "translationX", buttonStartX, buttonEndX);
     ObjectAnimator pinInputContainerAnimator =
         ObjectAnimator.ofFloat(mRoomNumberInputContainer, "translationX", pinStartX, pinEndX);
@@ -158,18 +152,5 @@ public class CreateOrJoinView extends FrameLayout {
     animatorSet.playTogether(buttonAnimator, pinInputContainerAnimator);
     animatorSet.setDuration(Constants.DEFAULT_ANIMATION_TIME_MILLIS);
     animatorSet.start();
-  }
-
-  private EditText getRoomNumberEditText() {
-//    try {
-//      Field f = mPinEntryView.getClass().getDeclaredField("mEditText"); //NoSuchFieldException
-//      f.setAccessible(true);
-//      EditText pinInput = (EditText) f.get(mPinEntryView); //IllegalAccessException
-//      return pinInput;
-//    } catch (NoSuchFieldException | IllegalAccessException e) {
-//      // TODO(clocksmith)
-//      return null;
-//    }
-    return mRoomNumberInput;
   }
 }

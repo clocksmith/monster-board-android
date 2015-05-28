@@ -15,6 +15,10 @@ public class Constants {
   public static final String ROOM_NUMBER = "playerName";
   public static final String PLAYER_ID = "playerId";
 
+  public static final int MAX_HP = 12;
   public static final int STARTING_HP = 10;
+  public static final int MAX_VP = 20;
   public static final int STARTING_VP = 0;
+
+  public static final int NUM_COLUMNS_IN_USER_GRID = 2;
 }

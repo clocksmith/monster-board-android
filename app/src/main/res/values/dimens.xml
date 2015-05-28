@@ -3,9 +3,17 @@
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
 
+  <dimen name="default_padding">8dp</dimen>
   <dimen name="default_control_width">300dp</dimen>
   <dimen name="button_height">56dp</dimen>
   <dimen name="icon_size">24dp</dimen>
   <dimen name="icon_padding">16dp</dimen>
   <dimen name="spinner_item_dropdown_height">80dp</dimen>
+
+  <dimen name="main_user_card_height">240dp</dimen>
+  <dimen name="number_picker_height">150dp</dimen>
+
+  <dimen name="list_item_user_height">120dp</dimen>
+  <dimen name="list_item_user_picker_width">32dp</dimen>
+  <dimen name="list_item_user_text_size">12dp</dimen>
 </resources>

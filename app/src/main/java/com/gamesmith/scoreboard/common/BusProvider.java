@@ -12,7 +12,5 @@ public final class BusProvider {
     return BUS;
   }
 
-  private BusProvider() {
-    // No instances.
-  }
+  private BusProvider() {}
 }

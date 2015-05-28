@@ -20,7 +20,7 @@
 
   <!-- Primary colors -->
   <color name="primary_color">#5F50A4</color>
-  <color name="primary_color_dark">#2B2257</color>
+  <color name="primary_color_dark">#413C54</color>
   <color name="primary_color_light">#9F8DF0</color>
   <color name="primary_color_half_transparent">#885F50A4</color>
 
@@ -30,4 +30,9 @@
 
   <color name="icon_color">@color/white</color>
   <color name="icon_ripple_color">@color/gray_half_transparent</color>
+
+  <color name="user_name_color">@color/accent_color</color>
+  <color name="monster_name_color">@color/primary_color_light</color>
+  <color name="hp_color">#F44336</color>
+  <color name="vp_color">#2196F3</color>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ScorecardTheme" parent="Theme.AppCompat">
+    <style name="ScoreboardTheme" parent="Theme.AppCompat">
         <item name="android:colorButtonNormal">@color/primary_color</item>
 
         <item name="android:colorControlNormal">@color/accent_color</item>
