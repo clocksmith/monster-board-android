@@ -38,7 +38,6 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
   }
 
   public void update(List<Player> players) {
-    Log.d(TAG, "update()");
     mPlayers = players;
     notifyDataSetChanged();
   }

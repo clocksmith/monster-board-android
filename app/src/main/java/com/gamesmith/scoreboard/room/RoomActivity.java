@@ -31,7 +31,6 @@ public class RoomActivity extends AppCompatActivity {
 
   private Firebase mFirebase;
   private int mRoomNumber;
-  private String mRoomNumberString;
   private int mPlayerId;
 
   private MainPlayerCard mMainPlayerCard;
@@ -51,7 +50,6 @@ public class RoomActivity extends AppCompatActivity {
     Bundle bundle = getIntent().getExtras();
     if (bundle != null) {
       mRoomNumber = bundle.getInt(Constants.ROOM_NUMBER);
-      mRoomNumberString = String.valueOf(mRoomNumber);
       mPlayerId = bundle.getInt(Constants.PLAYER_ID);
     }
 
@@ -66,17 +64,36 @@ public class RoomActivity extends AppCompatActivity {
     mRecyclerView.setHasFixedSize(false);
 
     if (getSupportActionBar() != null) {
+      getSupportActionBar().setDisplayShowTitleEnabled(false);
       getSupportActionBar().setDisplayShowCustomEnabled(true);
       getSupportActionBar().setCustomView(new RoomActionBar(this, mRoomNumber));
-      getSupportActionBar().setTitle("");
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        String name = (String) dataSnapshot.child("name").getValue();
+        String monster = (String) dataSnapshot.child("monster").getValue();
+        int hp = ((Long) dataSnapshot.child("hp").getValue()).intValue();
+        int vp = ((Long) dataSnapshot.child("vp").getValue()).intValue();
+
+        mMainPlayerCard.setName(name);
+        mMainPlayerCard.setMonster(monster);
+        mMainPlayerCard.setHp(hp);
+        mMainPlayerCard.setVp(vp);
+      }
+
+      @Override
+      public void onCancelled(FirebaseError firebaseError) {
+        // TODO(clocksmith)
+      }
+    });
 
     FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot snapshot) {
-        Log.d(TAG, "mFirebaseRooms onDataChange()");
+        Log.d(TAG, "onDataChange()");
         update(snapshot);
       }
 
@@ -112,19 +129,13 @@ public class RoomActivity extends AppCompatActivity {
       player.hp = hp;
       player.vp = vp;
       players.add(player);
-
-      if (userSnapshot.getKey().equals(String.valueOf(mPlayerId))) {
-        mMainPlayerCard.setName(name);
-        mMainPlayerCard.setMonster(monster);
-        mMainPlayerCard.setHp(hp);
-        mMainPlayerCard.setVp(vp);
-      }
     }
     mAdapter.update(players);
   }
 
   @Subscribe
   public void on(MainPlayerCard.MainMonsterChangedEvent event) {
+    Log.d(TAG, "event: " + event.monster);
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).child("monster").setValue(event.monster.getName());
   }
 

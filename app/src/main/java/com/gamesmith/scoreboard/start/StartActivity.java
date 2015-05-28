@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.util.Log;
 import android.widget.EditText;
 
 import com.firebase.client.DataSnapshot;
@@ -52,6 +54,8 @@ public class StartActivity extends Activity {
     mPlayerInput = (EditText) findViewById(R.id.activity_start_playerInput);
     mCreateOrJoinView = (CreateOrJoinView) findViewById(R.id.activity_start_createOrJoinView);
 
+    mPlayerInput.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
+
     mFirebaseStatic.addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,18 +94,20 @@ public class StartActivity extends Activity {
       @Override
       public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
         progressDialog.dismiss();
-        startRoomActivity(roomNumber, 0);
+        if (committed) {
+          startRoomActivity(roomNumber, 0);
+        }
       }
     });
   }
 
-  private void joinRoom(final int roomNumber) {
+  private void joinRoom(int roomNumber) {
     final ProgressDialog progressDialog = ProgressDialog.show(this, "Joining room", "hold tight...");
 
-    FirebaseUtils.getRooms(mFirebase).child(String.valueOf(roomNumber)).runTransaction(new Transaction.Handler() {
+    FirebaseUtils.getRoom(mFirebase, roomNumber).runTransaction(new Transaction.Handler() {
       @Override
       public Transaction.Result doTransaction(MutableData currentData) {
-        if (currentData != null && currentData.hasChildren()) {
+        if (currentData != null) {
           Player newPlayer = getNewUser();
 
           int highestPlayerId = -1;
@@ -112,6 +118,7 @@ public class StartActivity extends Activity {
             }
           }
           mJoiningPlayerId = highestPlayerId + 1;
+          Log.d(TAG, "mJoiningPlayerId: " + mJoiningPlayerId);
 
           currentData.child(String.valueOf(mJoiningPlayerId)).setValue(newPlayer);
           return Transaction.success(currentData);
@@ -124,17 +131,21 @@ public class StartActivity extends Activity {
       @Override
       public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
         progressDialog.dismiss();
-        startRoomActivity(roomNumber, mJoiningPlayerId);
+        if (committed) {
+          startRoomActivity(Integer.parseInt(currentData.getKey()), mJoiningPlayerId);
+        }
       }
     });
   }
 
   public void handleRoomTaken() {
     // TODO(clocksmith): Do something in this extremely rare case.
+    Log.w(TAG, "handleRoomTaken");
   }
 
   public void handleInvalidRoom() {
     // TODO(clocksmith)
+    Log.w(TAG, "handleInvalidRoom");
   }
 
   private int getRandomRoomNumber() {
@@ -152,8 +163,8 @@ public class StartActivity extends Activity {
 
   private void startRoomActivity(int roomNumber, int playerId) {
     Intent intent = new Intent(StartActivity.this, RoomActivity.class);
-    intent.putExtra(Constants.PLAYER_ID, playerId);
     intent.putExtra(Constants.ROOM_NUMBER, roomNumber);
+    intent.putExtra(Constants.PLAYER_ID, playerId);
     startActivity(intent);
   }
 
