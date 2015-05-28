@@ -75,7 +75,9 @@ public class MainPlayerCard extends LinearLayout {
     mMonsterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        BusProvider.getInstance().post(new MainMonsterChangedEvent((Monster) parent.getItemAtPosition(position)));
+        Monster monster = (Monster) parent.getItemAtPosition(position);
+        mMonsterName.setText(monster.getName());
+        BusProvider.getInstance().post(new MainMonsterChangedEvent(monster));
       }
 
       @Override
