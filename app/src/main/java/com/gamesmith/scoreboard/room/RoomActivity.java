@@ -75,6 +75,8 @@ public class RoomActivity extends AppCompatActivity {
       public void onGlobalLayout() {
         int height = mRecyclerView.getHeight();
         mAdapter.setItemHeight(height / 3);
+        FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(mRoomValueEventListener);
+        mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
       }
     });
 
@@ -99,10 +101,7 @@ public class RoomActivity extends AppCompatActivity {
         // TODO(clocksmith)
       }
     });
-
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).onDisconnect().removeValue();
-
-    FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(mRoomValueEventListener);
   }
 
   @Override
