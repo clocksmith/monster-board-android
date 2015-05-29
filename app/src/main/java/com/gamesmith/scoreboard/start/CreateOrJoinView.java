@@ -75,7 +75,8 @@ public class CreateOrJoinView extends FrameLayout {
     mRoomNumberInputContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
       @Override
       public void onGlobalLayout() {
-        mRoomNumberInputContainer.setTranslationX(mRoomNumberInputContainer.getWidth());
+        showStartingState();
+        mRoomNumberInputContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
       }
     });
 
@@ -115,9 +116,9 @@ public class CreateOrJoinView extends FrameLayout {
           inputText = mRoomNumberInput.getText().toString();
         }
         if (inputText.length() == 6) {
+          mRoomNumberInput.setText("");
           KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput);
           try {
-            hideRoomNumberInput();
             int roomNumber = Integer.parseInt(inputText);
             BusProvider.getInstance().post(new RoomNumberInputFinishedEvent(roomNumber));
           } catch (NumberFormatException e) {
@@ -131,6 +132,10 @@ public class CreateOrJoinView extends FrameLayout {
     });
   }
 
+  public void showStartingState() {
+    mButtonContainer.setTranslationX(0);
+    mRoomNumberInputContainer.setTranslationX(mRoomNumberInputContainer.getWidth());
+  }
   private void hideRoomNumberInput() {
     mIsRoomNumberInputVisible = false;
     KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput);

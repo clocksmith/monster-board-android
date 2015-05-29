@@ -72,6 +72,12 @@ public class StartActivity extends Activity {
     });
   }
 
+  @Override
+  protected  void onResume() {
+    super.onResume();
+    mCreateOrJoinView.showStartingState();
+  }
+
   private void createRoom() {
     final ProgressDialog progressDialog = ProgressDialog.show(this, "Creating room", "hold tight...");
     final int roomNumber = getRandomRoomNumber();
