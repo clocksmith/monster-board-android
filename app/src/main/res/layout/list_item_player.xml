@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_user_height"
+    android:layout_height="0dp"
     android:background="@color/primary_color_dark">
   <LinearLayout
       android:orientation="vertical"

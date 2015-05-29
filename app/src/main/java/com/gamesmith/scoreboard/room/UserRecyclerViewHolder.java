@@ -56,9 +56,15 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
   }
 
   private void updatePicker(ScoreboardNumberPicker picker, int newValue) {
-    int numIncrements = Math.abs(newValue - picker.getValue());
-    for (int i = 0; i < numIncrements; i++) {
-      picker.changeValueByOne(picker.getValue() < newValue);
-    }
+    picker.setValue(newValue);
+//    if (newValue < picker.getValue()) {
+//      picker.setValue(newValue + 1);
+//      picker.changeValueByOne(false);
+//    } else if (newValue > picker.getValue()) {
+//      picker.setValue(newValue - 1);
+//      picker.changeValueByOne(true);
+//    } else {
+//      picker.setValue(newValue);
+//    }
   }
 }

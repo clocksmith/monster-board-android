@@ -117,6 +117,7 @@ public class CreateOrJoinView extends FrameLayout {
         if (inputText.length() == 6) {
           KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput);
           try {
+            hideRoomNumberInput();
             int roomNumber = Integer.parseInt(inputText);
             BusProvider.getInstance().post(new RoomNumberInputFinishedEvent(roomNumber));
           } catch (NumberFormatException e) {
@@ -140,6 +141,7 @@ public class CreateOrJoinView extends FrameLayout {
     mIsRoomNumberInputVisible = true;
     KeyboardUtils.forceShowKeyboard((Activity) mContext);
     mRoomNumberInput.requestFocus();
+    mRoomNumberInput.setText("");
     animate(0, -mButtonContainer.getWidth(), mRoomNumberInputContainer.getWidth(), 0);
   }
 

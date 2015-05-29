@@ -18,12 +18,14 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
   private static final String TAG = UserRecyclerViewAdapter.class.getSimpleName();
 
   private List<Player> mPlayers;
+  private int mItemHeight;
 
   public UserRecyclerViewAdapter() {}
 
   @Override
   public UserRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_player, parent, false);
+    view.getLayoutParams().height = mItemHeight;
     return new UserRecyclerViewHolder(view);
   }
 
@@ -39,6 +41,13 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
 
   public void update(List<Player> players) {
     mPlayers = players;
+    if (mItemHeight > 0) {
+      notifyDataSetChanged();
+    }
+  }
+
+  public void setItemHeight(int height) {
+    mItemHeight = height;
     notifyDataSetChanged();
   }
 }

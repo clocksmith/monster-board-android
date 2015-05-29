@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -30,6 +31,7 @@ public class RoomActivity extends AppCompatActivity {
   private static final String TAG = RoomActivity.class.getSimpleName();
 
   private Firebase mFirebase;
+  private RoomValueEventListener mRoomValueEventListener;
   private int mRoomNumber;
   private int mPlayerId;
 
@@ -42,10 +44,8 @@ public class RoomActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_room);
 
-    Firebase.setAndroidContext(this);
-    mFirebase = new Firebase(Constants.FIREBASE_URL);
-
     BusProvider.getInstance().register(this);
+    mFirebase = new Firebase(Constants.FIREBASE_URL);
 
     Bundle bundle = getIntent().getExtras();
     if (bundle != null) {
@@ -53,8 +53,8 @@ public class RoomActivity extends AppCompatActivity {
       mPlayerId = bundle.getInt(Constants.PLAYER_ID);
     }
 
-    mMainPlayerCard = (MainPlayerCard) findViewById(R.id.activity_game_mainUserCard);
-    mRecyclerView = (RecyclerView) findViewById(R.id.activity_game_recyclerView);
+    mMainPlayerCard = (MainPlayerCard) findViewById(R.id.activity_room_mainUserCard);
+    mRecyclerView = (RecyclerView) findViewById(R.id.activity_room_recyclerView);
 
     mAdapter = new UserRecyclerViewAdapter();
     mRecyclerView.setAdapter(mAdapter);
@@ -69,6 +69,16 @@ public class RoomActivity extends AppCompatActivity {
       getSupportActionBar().setCustomView(new RoomActionBar(this, mRoomNumber));
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+      @Override
+      public void onGlobalLayout() {
+        int height = mRecyclerView.getHeight();
+        mAdapter.setItemHeight(height / 3);
+      }
+    });
+
+    mRoomValueEventListener = new RoomValueEventListener();
 
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
@@ -90,29 +100,34 @@ public class RoomActivity extends AppCompatActivity {
       }
     });
 
-    FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(new ValueEventListener() {
-      @Override
-      public void onDataChange(DataSnapshot snapshot) {
-        Log.d(TAG, "onDataChange()");
-        update(snapshot);
-      }
+    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).onDisconnect().removeValue();
 
-      @Override
-      public void onCancelled(FirebaseError firebaseError) {
-        // TODO(clocksmith)
-      }
-    });
+    FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(mRoomValueEventListener);
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        finish();
+        disconnectAndFinish();
         return true;
     }
 
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public void onBackPressed() {
+    disconnectAndFinish();
+    super.onBackPressed();
+  }
+
+  private void disconnectAndFinish() {
+    BusProvider.getInstance().unregister(this);
+    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).removeValue();
+    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).onDisconnect().cancel();
+    FirebaseUtils.getRoom(mFirebase, mRoomNumber).removeEventListener(mRoomValueEventListener);
+    finish();
   }
 
   private void update(DataSnapshot snapshot) {
@@ -164,6 +179,19 @@ public class RoomActivity extends AppCompatActivity {
       outRect.right = childPosition % numColumns == numColumns - 1 ? mWidth : mWidth / 2;
       outRect.bottom = mWidth;
       outRect.top = 0;
+    }
+  }
+
+  private class RoomValueEventListener implements ValueEventListener {
+    @Override
+    public void onDataChange(DataSnapshot snapshot) {
+      Log.d(TAG, "onDataChange()");
+      update(snapshot);
+    }
+
+    @Override
+    public void onCancelled(FirebaseError firebaseError) {
+      // TODO(clocksmith)
     }
   }
 }

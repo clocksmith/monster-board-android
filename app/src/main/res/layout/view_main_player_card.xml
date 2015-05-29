@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/main_user_card_height"
+    android:layout_height="wrap_content"
     android:background="@color/primary_color_dark"
     android:layout_margin="@dimen/default_padding">
     <LinearLayout
@@ -42,12 +42,12 @@
         <com.gamesmith.scoreboard.room.HpNumberPicker
             android:id="@+id/view_main_player_card_hp"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/number_picker_height"
+            android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/default_padding"/>
         <com.gamesmith.scoreboard.room.VpNumberPicker
             android:id="@+id/view_main_player_card_vp"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/number_picker_height"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/default_padding"/>
     </LinearLayout>
 </LinearLayout>
