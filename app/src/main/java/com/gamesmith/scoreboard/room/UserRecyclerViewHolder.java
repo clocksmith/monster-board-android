@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.gamesmith.scoreboard.R;
 import com.gamesmith.scoreboard.common.ScoreboardNumberPicker;
 import com.gamesmith.scoreboard.common.Monster;
-import com.gamesmith.scoreboard.firebase.Player;
+import com.gamesmith.scoreboard.common.firebase.Player;
 
 /**
  * Created by clocksmith on 5/25/15.

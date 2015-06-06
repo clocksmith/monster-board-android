@@ -1,5 +1,6 @@
 package com.gamesmith.scoreboard.room;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,13 +17,16 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.gamesmith.scoreboard.R;
 import com.gamesmith.scoreboard.common.BusProvider;
-import com.gamesmith.scoreboard.firebase.FirebaseUtils;
-import com.gamesmith.scoreboard.firebase.Player;
+import com.gamesmith.scoreboard.common.firebase.FirebaseUtils;
+import com.gamesmith.scoreboard.common.firebase.Player;
 import com.gamesmith.scoreboard.common.Constants;
+import com.gamesmith.scoreboard.start.StartActivity;
 import com.google.common.collect.Lists;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 
 /**
  * Created by clocksmith on 5/24/15.
@@ -62,6 +66,7 @@ public class RoomActivity extends AppCompatActivity {
     mRecyclerView.addItemDecoration(
         new BorderedItemDecoration(this.getResources().getDimensionPixelOffset(R.dimen.default_padding)));
     mRecyclerView.setHasFixedSize(false);
+    mRecyclerView.setItemAnimator(new ScaleInAnimator());
 
     if (getSupportActionBar() != null) {
       getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -70,25 +75,25 @@ public class RoomActivity extends AppCompatActivity {
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    mRoomValueEventListener = new RoomValueEventListener();
+
     mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
       @Override
       public void onGlobalLayout() {
+        mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         int height = mRecyclerView.getHeight();
         mAdapter.setItemHeight(height / 3);
         FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(mRoomValueEventListener);
-        mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
       }
     });
-
-    mRoomValueEventListener = new RoomValueEventListener();
 
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
-        String name = (String) dataSnapshot.child("name").getValue();
-        String monster = (String) dataSnapshot.child("monster").getValue();
-        int hp = ((Long) dataSnapshot.child("hp").getValue()).intValue();
-        int vp = ((Long) dataSnapshot.child("vp").getValue()).intValue();
+        String name = dataSnapshot.child("name") == null ? "" : (String) dataSnapshot.child("name").getValue();
+        String monster = dataSnapshot.child("monster") == null ? "" : (String) dataSnapshot.child("monster").getValue();
+        int hp = dataSnapshot.child("hp") == null ? 0 : ((Long) dataSnapshot.child("hp").getValue()).intValue();
+        int vp = dataSnapshot.child("vp") == null ? 0 : ((Long) dataSnapshot.child("vp").getValue()).intValue();
 
         mMainPlayerCard.setName(name);
         mMainPlayerCard.setMonster(monster);
@@ -99,8 +104,10 @@ public class RoomActivity extends AppCompatActivity {
       @Override
       public void onCancelled(FirebaseError firebaseError) {
         // TODO(clocksmith)
+        Log.w(TAG, "onCancelled()");
       }
     });
+
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).onDisconnect().removeValue();
   }
 
@@ -108,7 +115,7 @@ public class RoomActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        disconnectAndFinish();
+        launchStartActivty();
         return true;
     }
 
@@ -117,15 +124,20 @@ public class RoomActivity extends AppCompatActivity {
 
   @Override
   public void onBackPressed() {
-    disconnectAndFinish();
+    launchStartActivty();
     super.onBackPressed();
   }
 
-  private void disconnectAndFinish() {
-    BusProvider.getInstance().unregister(this);
-    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).removeValue();
-    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).onDisconnect().cancel();
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
     FirebaseUtils.getRoom(mFirebase, mRoomNumber).removeEventListener(mRoomValueEventListener);
+    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).removeValue();
+  }
+
+  private void launchStartActivty() {
+    Intent intent = new Intent(RoomActivity.this, StartActivity.class);
+    startActivity(intent);
     finish();
   }
 
@@ -149,7 +161,6 @@ public class RoomActivity extends AppCompatActivity {
 
   @Subscribe
   public void on(MainPlayerCard.MainMonsterChangedEvent event) {
-    Log.d(TAG, "event: " + event.monster);
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).child("monster").setValue(event.monster.getName());
   }
 
@@ -184,13 +195,13 @@ public class RoomActivity extends AppCompatActivity {
   private class RoomValueEventListener implements ValueEventListener {
     @Override
     public void onDataChange(DataSnapshot snapshot) {
-      Log.d(TAG, "onDataChange()");
       update(snapshot);
     }
 
     @Override
     public void onCancelled(FirebaseError firebaseError) {
       // TODO(clocksmith)
+      Log.w(TAG, "onCancelled()");
     }
   }
 }

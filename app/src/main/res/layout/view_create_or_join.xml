@@ -26,20 +26,17 @@
       android:id="@+id/view_create_or_join_roomNumberInputContainer"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
-    <EditText
+    <com.gamesmith.scoreboard.start.RoomNumberInput
         android:id="@+id/view_create_or_join_roomNumberInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:maxLength="6"
-        android:inputType="number"/>
-    <ImageView
-        android:id="@+id/view_create_or_join_closeIcon"
-        android:src="@drawable/ic_action_close"
-        android:layout_width="@dimen/button_height"
-        android:layout_height="@dimen/button_height"
-        android:layout_gravity="start"
-        android:padding="@dimen/icon_padding"/>
+        android:gravity="center"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/view_create_or_join_closeIcon"-->
+        <!--android:src="@drawable/ic_action_close"-->
+        <!--android:layout_width="@dimen/button_height"-->
+        <!--android:layout_height="@dimen/button_height"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:padding="@dimen/icon_padding"/>-->
   </FrameLayout>
 </FrameLayout>

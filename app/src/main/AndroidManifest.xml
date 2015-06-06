@@ -11,7 +11,8 @@
         <activity
             android:name=".start.StartActivity"
             android:label="@string/app_name"
-            android:theme="@style/ScoreboardTheme">
+            android:theme="@style/ScoreboardTheme"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +22,8 @@
 
         <activity
             android:name=".room.RoomActivity"
-            android:theme="@style/ScoreboardTheme">
+            android:theme="@style/ScoreboardTheme"
+            android:noHistory="true">
         </activity>
     </application>
 

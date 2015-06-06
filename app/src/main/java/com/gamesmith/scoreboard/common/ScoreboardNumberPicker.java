@@ -70,15 +70,4 @@ public class ScoreboardNumberPicker extends NumberPicker {
       }
     }
   }
-
-  public void changeValueByOne(final boolean increment) {
-    Method method;
-    try {
-      method = NumberPicker.class.getDeclaredMethod("changeValueByOne", boolean.class);
-      method.setAccessible(true);
-      method.invoke(this, increment);
-    } catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-      Log.e(TAG, "Nope", e);
-    }
-  }
 }

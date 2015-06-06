@@ -4,15 +4,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,14 +26,6 @@ public class CreateOrJoinView extends FrameLayout {
 
   public class CreateButtonClickedEvent {}
 
-  public class RoomNumberInputFinishedEvent {
-    public final int roomNumber;
-
-    public RoomNumberInputFinishedEvent(int roomNumber) {
-      this.roomNumber = roomNumber;
-    }
-  }
-
   private Context mContext;
   private boolean mIsRoomNumberInputVisible;
 
@@ -46,7 +34,7 @@ public class CreateOrJoinView extends FrameLayout {
   private Button mJoinButton;
   private FrameLayout mRoomNumberInputContainer;
   private ImageView mCloseIcon;
-  private EditText mRoomNumberInput;
+  private RoomNumberInput mRoomNumberInput;
 
   public CreateOrJoinView(Context context) {
     this(context, null);
@@ -69,8 +57,8 @@ public class CreateOrJoinView extends FrameLayout {
     mCreateButton = (Button) view.findViewById(R.id.view_create_or_join_createButton);
     mJoinButton = (Button) view.findViewById(R.id.view_create_or_join_joinButton);
     mRoomNumberInputContainer = (FrameLayout) view.findViewById(R.id.view_create_or_join_roomNumberInputContainer);
-    mCloseIcon = (ImageView) view.findViewById(R.id.view_create_or_join_closeIcon);
-    mRoomNumberInput = (EditText) view.findViewById(R.id.view_create_or_join_roomNumberInput);
+//    mCloseIcon = (ImageView) view.findViewById(R.id.view_create_or_join_closeIcon);
+    mRoomNumberInput = (RoomNumberInput) view.findViewById(R.id.view_create_or_join_roomNumberInput);
 
     mRoomNumberInputContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
       @Override
@@ -98,55 +86,32 @@ public class CreateOrJoinView extends FrameLayout {
       }
     });
 
-    mCloseIcon.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        hideRoomNumberInput();
-      }
-    });
-
-    mRoomNumberInput.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-        String inputText = "";
-        if (mRoomNumberInput.getText() != null) {
-          inputText = mRoomNumberInput.getText().toString();
-        }
-        if (inputText.length() == 6) {
-          mRoomNumberInput.setText("");
-          KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput);
-          try {
-            int roomNumber = Integer.parseInt(inputText);
-            BusProvider.getInstance().post(new RoomNumberInputFinishedEvent(roomNumber));
-          } catch (NumberFormatException e) {
-            Log.e(TAG, "bad number format: " + inputText);
-          }
-        }
-      }
-
-      @Override
-      public void afterTextChanged(Editable s) {}
-    });
+//    mCloseIcon.setOnClickListener(new OnClickListener() {
+//      @Override
+//      public void onClick(View v) {
+//        hideRoomNumberInput();
+//      }
+//    });
   }
 
   public void showStartingState() {
+    mIsRoomNumberInputVisible = false;
     mButtonContainer.setTranslationX(0);
     mRoomNumberInputContainer.setTranslationX(mRoomNumberInputContainer.getWidth());
   }
+
   private void hideRoomNumberInput() {
     mIsRoomNumberInputVisible = false;
-    KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput);
+    KeyboardUtils.hideKeyboard((Activity) mContext, mRoomNumberInput.getEditText());
     animate(-mButtonContainer.getWidth(), 0, 0, mRoomNumberInputContainer.getWidth());
   }
 
   private void showRoomNumberInput() {
     mIsRoomNumberInputVisible = true;
-    KeyboardUtils.forceShowKeyboard((Activity) mContext);
     mRoomNumberInput.requestFocus();
-    mRoomNumberInput.setText("");
+    mRoomNumberInput.getEditText().requestFocus();
+    KeyboardUtils.forceShowKeyboard((Activity) mContext);
+    mRoomNumberInput.clear();
     animate(0, -mButtonContainer.getWidth(), mRoomNumberInputContainer.getWidth(), 0);
   }
 

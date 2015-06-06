@@ -9,8 +9,10 @@ public class Constants {
 
   public static final int DEFAULT_ANIMATION_TIME_MILLIS = 350;
 
-  public static final int MIN_PIN = 100000;
-  public static final int MAX_PIN = 999999;
+  // TODO(clocksmith): Delete MIN_ROOM_NUMBER and MAX_ROOM_NUMBER and make them a function of MIN_ROOM_NUMBER.
+  public static final int NUM_ROOM_NUMBER_DIGITS = 6;
+  public static final int MIN_ROOM_NUMBER = 100000;
+  public static final int MAX_ROOM_NUMBER = 999999;
 
   public static final String ROOM_NUMBER = "playerName";
   public static final String PLAYER_ID = "playerId";

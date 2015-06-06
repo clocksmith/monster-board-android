@@ -15,8 +15,8 @@ import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 import com.gamesmith.scoreboard.common.Monster;
-import com.gamesmith.scoreboard.firebase.FirebaseUtils;
-import com.gamesmith.scoreboard.firebase.Player;
+import com.gamesmith.scoreboard.common.firebase.FirebaseUtils;
+import com.gamesmith.scoreboard.common.firebase.Player;
 import com.gamesmith.scoreboard.common.BusProvider;
 import com.gamesmith.scoreboard.common.Constants;
 import com.gamesmith.scoreboard.R;
@@ -38,7 +38,8 @@ public class StartActivity extends Activity {
   private int mJoiningPlayerId;
 
   private EditText mPlayerInput;
-  private CreateOrJoinView mCreateOrJoinView;
+
+  ProgressDialog mProgressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,6 @@ public class StartActivity extends Activity {
     mRandom = new Random();
 
     mPlayerInput = (EditText) findViewById(R.id.activity_start_playerInput);
-    mCreateOrJoinView = (CreateOrJoinView) findViewById(R.id.activity_start_createOrJoinView);
 
     mPlayerInput.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
 
@@ -68,18 +68,19 @@ public class StartActivity extends Activity {
       @Override
       public void onCancelled(FirebaseError firebaseError) {
         // TODO(clocksmith)
+        Log.w(TAG, "onCancelled()");
       }
     });
   }
 
   @Override
-  protected  void onResume() {
-    super.onResume();
-    mCreateOrJoinView.showStartingState();
+  public void onDestroy() {
+    super.onDestroy();
+    BusProvider.getInstance().unregister(this);
   }
 
   private void createRoom() {
-    final ProgressDialog progressDialog = ProgressDialog.show(this, "Creating room", "hold tight...");
+    mProgressDialog = ProgressDialog.show(this, "Creating room", "hold tight...");
     final int roomNumber = getRandomRoomNumber();
 
     FirebaseUtils.getRooms(mFirebase).runTransaction(new Transaction.Handler() {
@@ -99,7 +100,9 @@ public class StartActivity extends Activity {
 
       @Override
       public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
-        progressDialog.dismiss();
+        if (mProgressDialog != null) {
+          mProgressDialog.dismiss();
+        }
         if (committed) {
           startRoomActivity(roomNumber, 0);
         }
@@ -108,7 +111,9 @@ public class StartActivity extends Activity {
   }
 
   private void joinRoom(int roomNumber) {
-    final ProgressDialog progressDialog = ProgressDialog.show(this, "Joining room", "hold tight...");
+    if (!this.isFinishing()) {
+      mProgressDialog = ProgressDialog.show(this, "Joining room", "hold tight...");
+    }
 
     FirebaseUtils.getRoom(mFirebase, roomNumber).runTransaction(new Transaction.Handler() {
       @Override
@@ -124,7 +129,6 @@ public class StartActivity extends Activity {
             }
           }
           mJoiningPlayerId = highestPlayerId + 1;
-          Log.d(TAG, "mJoiningPlayerId: " + mJoiningPlayerId);
 
           currentData.child(String.valueOf(mJoiningPlayerId)).setValue(newPlayer);
           return Transaction.success(currentData);
@@ -136,9 +140,14 @@ public class StartActivity extends Activity {
 
       @Override
       public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
-        progressDialog.dismiss();
+        if (mProgressDialog != null) {
+          mProgressDialog.dismiss();
+        }
         if (committed) {
           startRoomActivity(Integer.parseInt(currentData.getKey()), mJoiningPlayerId);
+        } else {
+          // TODO(clocksmith)
+          Log.w(TAG, "not committed");
         }
       }
     });
@@ -155,7 +164,7 @@ public class StartActivity extends Activity {
   }
 
   private int getRandomRoomNumber() {
-    return mRandom.nextInt(Constants.MAX_PIN - Constants.MIN_PIN + 1) + Constants.MIN_PIN;
+    return mRandom.nextInt(Constants.MAX_ROOM_NUMBER - Constants.MIN_ROOM_NUMBER + 1) + Constants.MIN_ROOM_NUMBER;
   }
 
   private Player getNewUser() {
@@ -168,10 +177,12 @@ public class StartActivity extends Activity {
   }
 
   private void startRoomActivity(int roomNumber, int playerId) {
+    Log.d(TAG, "startRoomActivity()");
     Intent intent = new Intent(StartActivity.this, RoomActivity.class);
     intent.putExtra(Constants.ROOM_NUMBER, roomNumber);
     intent.putExtra(Constants.PLAYER_ID, playerId);
     startActivity(intent);
+    finish();
   }
 
   @Subscribe
@@ -180,7 +191,8 @@ public class StartActivity extends Activity {
   }
 
   @Subscribe
-  public void on(CreateOrJoinView.RoomNumberInputFinishedEvent event) {
+  public void on(RoomNumberInput.RoomNumberInputFinishedEvent event) {
+    Log.d(TAG, "on(RoomNumberInput.RoomNumberInputFinishedEvent()");
     joinRoom(event.roomNumber);
   }
 }

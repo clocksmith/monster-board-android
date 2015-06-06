@@ -13,19 +13,19 @@ public class KeyboardUtils {
     showKeyboard(activity, InputMethodManager.SHOW_FORCED);
   }
 
-  public static void hideKeyboard(Activity activity, EditText input) {
-    if (activity.getCurrentFocus() != null) {
-      InputMethodManager inputMethodManager =
-          (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-      inputMethodManager.hideSoftInputFromWindow(input.getWindowToken(), 0);
-    }
-  }
-
   private static void showKeyboard(Activity activity, int inputMethodManagerValue) {
     if (activity.getCurrentFocus() != null) {
       InputMethodManager inputMethodManager =
           (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
       inputMethodManager.showSoftInput(activity.getCurrentFocus(), inputMethodManagerValue);
+    }
+  }
+
+  public static void hideKeyboard(Activity activity, EditText input) {
+    if (activity.getCurrentFocus() != null) {
+      InputMethodManager inputMethodManager =
+          (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+      inputMethodManager.hideSoftInputFromWindow(input.getWindowToken(), 0);
     }
   }
 }

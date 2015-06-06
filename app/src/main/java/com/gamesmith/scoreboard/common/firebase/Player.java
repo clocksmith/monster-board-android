@@ -1,4 +1,4 @@
-package com.gamesmith.scoreboard.firebase;
+package com.gamesmith.scoreboard.common.firebase;
 
 /**
  * Created by clocksmith on 5/25/15.

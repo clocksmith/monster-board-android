@@ -1,4 +1,4 @@
-package com.gamesmith.scoreboard.firebase;
+package com.gamesmith.scoreboard.common.firebase;
 
 import com.firebase.client.Firebase;
 

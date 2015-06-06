@@ -1,13 +1,12 @@
 package com.gamesmith.scoreboard.room;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.gamesmith.scoreboard.R;
-import com.gamesmith.scoreboard.firebase.Player;
+import com.gamesmith.scoreboard.common.firebase.Player;
 
 import java.util.List;
 
