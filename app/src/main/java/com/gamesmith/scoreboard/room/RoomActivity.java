@@ -1,5 +1,7 @@
 package com.gamesmith.scoreboard.room;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -112,10 +114,17 @@ public class RoomActivity extends AppCompatActivity {
   }
 
   @Override
+  public void onDestroy() {
+    super.onDestroy();
+    FirebaseUtils.getRoom(mFirebase, mRoomNumber).removeEventListener(mRoomValueEventListener);
+    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).removeValue();
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        launchStartActivty();
+        confirmLeaveRoom();
         return true;
     }
 
@@ -124,18 +133,24 @@ public class RoomActivity extends AppCompatActivity {
 
   @Override
   public void onBackPressed() {
-    launchStartActivty();
+    confirmLeaveRoom();
     super.onBackPressed();
   }
 
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    FirebaseUtils.getRoom(mFirebase, mRoomNumber).removeEventListener(mRoomValueEventListener);
-    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).removeValue();
+  private void confirmLeaveRoom() {
+    new AlertDialog.Builder(this)
+        .setMessage(R.string.leave_room)
+        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            leaveRoom();
+          }
+        })
+        .setNegativeButton(R.string.no, null)
+        .show();
   }
 
-  private void launchStartActivty() {
+  private void leaveRoom() {
     Intent intent = new Intent(RoomActivity.this, StartActivity.class);
     startActivity(intent);
     finish();
