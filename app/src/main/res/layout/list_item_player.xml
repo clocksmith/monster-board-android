@@ -4,7 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:background="@color/primary_color_dark">
+    android:background="@color/small_card_background_color">
   <LinearLayout
       android:orientation="vertical"
       android:layout_width="0dp"

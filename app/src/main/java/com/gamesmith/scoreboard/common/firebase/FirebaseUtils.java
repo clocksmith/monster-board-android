@@ -1,5 +1,6 @@
 package com.gamesmith.scoreboard.common.firebase;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 
 /**
@@ -16,5 +17,14 @@ public class FirebaseUtils {
 
   public static Firebase getPlayer(Firebase root, int roomNumber, int playerId) {
     return getRoom(root, roomNumber).child(String.valueOf(playerId));
+  }
+
+  public static <T extends Object> T getChildValueDeNull(DataSnapshot dataSnapshot, String childPath, T defaultValue) {
+    DataSnapshot child = dataSnapshot.child(childPath);
+    if (child == null || child.getValue() == null) {
+      return defaultValue;
+    } else {
+      return (T) child.getValue();
+    }
   }
 }

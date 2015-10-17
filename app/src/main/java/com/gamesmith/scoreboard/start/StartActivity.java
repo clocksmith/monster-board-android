@@ -13,8 +13,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
-import com.firebase.client.ValueEventListener;
 import com.gamesmith.scoreboard.common.Monster;
+import com.gamesmith.scoreboard.common.NameProvider;
 import com.gamesmith.scoreboard.common.firebase.FirebaseUtils;
 import com.gamesmith.scoreboard.common.firebase.Player;
 import com.gamesmith.scoreboard.common.BusProvider;
@@ -32,8 +32,7 @@ public class StartActivity extends Activity {
   private static final String TAG = StartActivity.class.getSimpleName();
 
   private Firebase mFirebase;
-  private Firebase mFirebaseStatic;
-  private List<String> mDefaultPlayers;
+  private List<String> mDefaultNames;
   private Random mRandom;
   private int mJoiningPlayerId;
 
@@ -49,28 +48,14 @@ public class StartActivity extends Activity {
     BusProvider.getInstance().register(this);
     Firebase.setAndroidContext(this);
     mFirebase = new Firebase(Constants.FIREBASE_URL);
-    mFirebaseStatic = new Firebase(Constants.FIREBASE_STATIC_URL);
     mRandom = new Random();
 
     mPlayerInput = (EditText) findViewById(R.id.activity_start_playerInput);
 
     mPlayerInput.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
 
-    mFirebaseStatic.addListenerForSingleValueEvent(new ValueEventListener() {
-      @Override
-      public void onDataChange(DataSnapshot dataSnapshot) {
-        mDefaultPlayers = (List<String>) dataSnapshot.child("playerNames").getValue();
-        if (mPlayerInput.getText() == null || mPlayerInput.getText().toString().isEmpty()) {
-          mPlayerInput.setText(mDefaultPlayers.get(mRandom.nextInt(mDefaultPlayers.size())));
-        }
-      }
-
-      @Override
-      public void onCancelled(FirebaseError firebaseError) {
-        // TODO(clocksmith)
-        Log.w(TAG, "onCancelled()");
-      }
-    });
+    mDefaultNames = NameProvider.getNames(this);
+    setRandomName();
   }
 
   @Override
@@ -183,6 +168,12 @@ public class StartActivity extends Activity {
     intent.putExtra(Constants.PLAYER_ID, playerId);
     startActivity(intent);
     finish();
+  }
+
+  private void setRandomName() {
+    if (mPlayerInput.getText() == null || mPlayerInput.getText().toString().isEmpty()) {
+      mPlayerInput.setText(mDefaultNames.get(mRandom.nextInt(mDefaultNames.size())));
+    }
   }
 
   @Subscribe

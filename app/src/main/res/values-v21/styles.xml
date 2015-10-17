@@ -2,7 +2,7 @@
 <resources>
   <style name="ScoreboardTheme" parent="Theme.AppCompat">
     <item name="colorPrimary">@color/primary_color</item>
-    <item name="colorPrimaryDark">@color/primary_color_dark</item>
+    <item name="colorPrimaryDark">@color/primary_color_darker</item>
     <item name="colorAccent">@color/accent_color</item>
 
     <item name="android:colorButtonNormal">@color/primary_color</item>
@@ -15,5 +15,7 @@
     <item name="actionMenuTextColor">@color/primary_color</item>
 
     <item name="android:textViewStyle">@style/ScoreboardTheme.TextViewStyle</item>
+
+    <item name="android:windowBackground">@color/activity_background_color</item>
   </style>
 </resources>

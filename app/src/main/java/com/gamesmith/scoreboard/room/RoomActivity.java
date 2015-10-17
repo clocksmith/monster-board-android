@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +28,7 @@ import com.google.common.collect.Lists;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
+import java.util.Map;
 
 import jp.wasabeef.recyclerview.animators.ScaleInAnimator;
 
@@ -75,6 +77,7 @@ public class RoomActivity extends AppCompatActivity {
       getSupportActionBar().setDisplayShowCustomEnabled(true);
       getSupportActionBar().setCustomView(new RoomActionBar(this, mRoomNumber));
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.action_bar_color)));
     }
 
     mRoomValueEventListener = new RoomValueEventListener();
@@ -92,10 +95,10 @@ public class RoomActivity extends AppCompatActivity {
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
-        String name = dataSnapshot.child("name") == null ? "" : (String) dataSnapshot.child("name").getValue();
-        String monster = dataSnapshot.child("monster") == null ? "" : (String) dataSnapshot.child("monster").getValue();
-        int hp = dataSnapshot.child("hp") == null ? 0 : ((Long) dataSnapshot.child("hp").getValue()).intValue();
-        int vp = dataSnapshot.child("vp") == null ? 0 : ((Long) dataSnapshot.child("vp").getValue()).intValue();
+        String name = FirebaseUtils.getChildValueDeNull(dataSnapshot, "name", "");
+        String monster = FirebaseUtils.getChildValueDeNull(dataSnapshot, "monster", "");
+        int hp = FirebaseUtils.getChildValueDeNull(dataSnapshot, "hp", 0L).intValue();
+        int vp = FirebaseUtils.getChildValueDeNull(dataSnapshot, "vp", 0L).intValue();
 
         mMainPlayerCard.setName(name);
         mMainPlayerCard.setMonster(monster);
@@ -134,7 +137,6 @@ public class RoomActivity extends AppCompatActivity {
   @Override
   public void onBackPressed() {
     confirmLeaveRoom();
-    super.onBackPressed();
   }
 
   private void confirmLeaveRoom() {
@@ -159,16 +161,16 @@ public class RoomActivity extends AppCompatActivity {
   private void update(DataSnapshot snapshot) {
     List<Player> players = Lists.newArrayList();
     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-      String name = (String) userSnapshot.child("name").getValue();
-      String monster = (String) userSnapshot.child("monster").getValue();
-      int hp = ((Long) userSnapshot.child("hp").getValue()).intValue();
-      int vp = ((Long) userSnapshot.child("vp").getValue()).intValue();
+      @SuppressWarnings("unchecked")
+      Map<String, Object> user = (Map<String, Object>) userSnapshot.getValue();
 
       Player player = new Player();
-      player.name = name;
-      player.monster = monster;
-      player.hp = hp;
-      player.vp = vp;
+      player.name = (String) user.get("name");
+      player.monster = (String) user.get("monster");
+//      player.hp = Integer.parseInt((String) user.get("hp"));
+//      player.vp = Integer.parseInt((String) user.get("vp"));
+      player.hp = ((Long) user.get("hp")).intValue();
+      player.vp = ((Long) user.get("vp")).intValue();
       players.add(player);
     }
     mAdapter.update(players);
