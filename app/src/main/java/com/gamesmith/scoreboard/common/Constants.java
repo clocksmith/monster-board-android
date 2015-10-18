@@ -5,9 +5,9 @@ package com.gamesmith.scoreboard.common;
  */
 public class Constants {
   public static final String FIREBASE_URL = "https://boiling-heat-4798.firebaseio.com/";
-  public static final String FIREBASE_STATIC_URL = "https://scoreboard-static.firebaseio.com/";
 
   public static final int DEFAULT_ANIMATION_TIME_MILLIS = 350;
+  public static final int PULSE_ANIMATION_DURATION_MILLIS = 375;
 
   // TODO(clocksmith): Delete MIN_ROOM_NUMBER and MAX_ROOM_NUMBER and make them a function of MIN_ROOM_NUMBER.
   public static final int NUM_ROOM_NUMBER_DIGITS = 6;
@@ -23,6 +23,4 @@ public class Constants {
   public static final int STARTING_VP = 0;
 
   public static final int NUM_COLUMNS_IN_USER_GRID = 2;
-
-  public static final int PULSE_ANIMATION_DURATION_MILLIS = 375;
 }
