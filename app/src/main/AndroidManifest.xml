@@ -12,7 +12,8 @@
             android:name=".start.StartActivity"
             android:label="@string/app_name"
             android:theme="@style/ScoreboardTheme"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +24,8 @@
         <activity
             android:name=".room.RoomActivity"
             android:theme="@style/ScoreboardTheme"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

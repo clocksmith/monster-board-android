@@ -17,6 +17,5 @@ public class VpNumberPicker extends ScoreboardNumberPicker {
     this.setMaxValue(Constants.MAX_VP);
     this.setDividerColor(getResources().getColor(R.color.vp_color));
     this.setTextColor(getResources().getColor(R.color.vp_color));
-    this.setWrapSelectorWheel(false);
   }
 }

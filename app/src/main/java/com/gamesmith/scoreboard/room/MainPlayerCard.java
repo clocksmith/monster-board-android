@@ -91,7 +91,7 @@ public class MainPlayerCard extends LinearLayout {
         BusProvider.getInstance().post(new MainHpChangedEvent(newVal));
       }
     });
-
+    mHpPicker.setTextSize(getResources().getDimensionPixelSize(R.dimen.main_player_picker_text_size));
 
     mVpPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
       @Override
@@ -99,6 +99,7 @@ public class MainPlayerCard extends LinearLayout {
         BusProvider.getInstance().post(new MainVpChangedEvent(newVal));
       }
     });
+    mVpPicker.setTextSize(getResources().getDimensionPixelOffset(R.dimen.main_player_picker_text_size));
   }
 
   public void setName(String name) {

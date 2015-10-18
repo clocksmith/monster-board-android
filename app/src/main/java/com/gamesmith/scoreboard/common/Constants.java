@@ -23,4 +23,6 @@ public class Constants {
   public static final int STARTING_VP = 0;
 
   public static final int NUM_COLUMNS_IN_USER_GRID = 2;
+
+  public static final int PULSE_ANIMATION_DURATION_MILLIS = 375;
 }
