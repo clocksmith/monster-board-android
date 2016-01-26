@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.gamesmith.scoreboard.R;
 import com.gamesmith.scoreboard.common.AnimationUtils;
-import com.gamesmith.scoreboard.common.ScoreboardNumberPicker;
 import com.gamesmith.scoreboard.common.Monster;
 import com.gamesmith.scoreboard.common.firebase.Player;
 
@@ -44,7 +43,7 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
 
   public void updatePlayerData(Player player) {
     mPlayerName.setText(player.name);
-    mMonsterImage.setImageDrawable(mContext.getDrawable(Monster.getEnum(player.monster).getSmallImageResId()));
+    mMonsterImage.setImageDrawable(mContext.getDrawable(Monster.getEnum(player.monster).getImageResId()));
     mMonsterName.setText(player.monster);
     updatePointText(mVp, mVpIcon, player.vp);
     updatePointText(mHp, mHpIcon, player.hp);
@@ -53,8 +52,7 @@ public class UserRecyclerViewHolder extends RecyclerView.ViewHolder {
   private void updatePointText(TextView pointTextView, ImageView iconView, int newValue) {
     String newText = String.valueOf(newValue);
     if (!pointTextView.getText().toString().equals(newText) && iconView.getScaleX() == 1f) {
-      Log.d(TAG, "pulse");
-      AnimationUtils.pulse(iconView, 1.5f);
+      AnimationUtils.pulse(iconView, 1.6f);
     }
     pointTextView.setText(newText);
   }

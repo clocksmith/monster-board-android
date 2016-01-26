@@ -4,10 +4,16 @@
   <string name="action_settings">Settings</string>
 
   <string name="player_name">PLAYER NAME</string>
+  <string name="monster">MONSTER</string>
   <string name="create_game">CREATE GAME</string>
   <string name="join_game">JOIN GAME</string>
 
   <string name="leave_room">Leave room?</string>
   <string name="yes">YES</string>
   <string name="no">NO</string>
+
+  <string name="king_of_new_york">King of New York</string>
+  <string name="king_of_tokyo">King of Tokyo</string>
+  <string name="king_of_tokyo_halloween">King of Tokyo: Halloween</string>
+  <string name="king_of_tokyo_power_up">King of Tokyo: Power Up!</string>
 </resources>

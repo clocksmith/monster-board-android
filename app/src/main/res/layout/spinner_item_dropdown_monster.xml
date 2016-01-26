@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/spinner_item_dropdown_height">
+    android:layout_height="match_parent">
   <ImageView
       android:id="@+id/spinner_item_dropdown_monster_imageView"
-      android:layout_width="@dimen/spinner_item_dropdown_height"
-      android:layout_height="@dimen/spinner_item_dropdown_height"/>
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
   <TextView
       android:id="@+id/spinner_item_dropdown_monster_textView"
       android:layout_width="0dp"

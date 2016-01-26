@@ -47,6 +47,9 @@ public class RoomActivity extends AppCompatActivity {
   private RecyclerView mRecyclerView;
   private UserRecyclerViewAdapter mAdapter;
 
+  private boolean mReceyclerViewLayoutCalled;
+  private boolean mOnResumeExecuted;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -82,15 +85,18 @@ public class RoomActivity extends AppCompatActivity {
 
     mRoomValueEventListener = new RoomValueEventListener();
 
-    mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-      @Override
-      public void onGlobalLayout() {
-        mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        int height = mRecyclerView.getHeight();
-        mAdapter.setItemHeight(height / 3);
-        FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(mRoomValueEventListener);
-      }
-    });
+    if (!mReceyclerViewLayoutCalled) {
+      mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+          mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+          int height = mRecyclerView.getHeight();
+          mAdapter.setItemHeight(height / 3);
+          FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(mRoomValueEventListener);
+          mReceyclerViewLayoutCalled = true;
+        }
+      });
+    }
 
     FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).addListenerForSingleValueEvent(new ValueEventListener() {
       @Override
@@ -112,15 +118,32 @@ public class RoomActivity extends AppCompatActivity {
         Log.w(TAG, "onCancelled()");
       }
     });
+  }
 
-    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).onDisconnect().removeValue();
+  @Override
+  public void onResume() {
+    super.onResume();
+    Log.d(TAG, "onResume()");
+
+    if (mReceyclerViewLayoutCalled && mOnResumeExecuted) {
+      FirebaseUtils.getRoom(mFirebase, mRoomNumber).removeEventListener(mRoomValueEventListener);
+      FirebaseUtils.getRoom(mFirebase, mRoomNumber).addValueEventListener(mRoomValueEventListener);
+    }
+
+    mOnResumeExecuted = true;
+  }
+
+  public void onPause() {
+    super.onPause();
+    Log.d(TAG, "onPause()");
+    FirebaseUtils.getRoom(mFirebase, mRoomNumber).removeEventListener(mRoomValueEventListener);
+    moveTaskToBack(true);
   }
 
   @Override
   public void onDestroy() {
     super.onDestroy();
-    FirebaseUtils.getRoom(mFirebase, mRoomNumber).removeEventListener(mRoomValueEventListener);
-    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).removeValue();
+    Log.d(TAG, "onDestroy()");
   }
 
   @Override
@@ -153,6 +176,7 @@ public class RoomActivity extends AppCompatActivity {
   }
 
   private void leaveRoom() {
+    FirebaseUtils.getPlayer(mFirebase, mRoomNumber, mPlayerId).removeValue();
     Intent intent = new Intent(RoomActivity.this, StartActivity.class);
     startActivity(intent);
     finish();
@@ -167,8 +191,6 @@ public class RoomActivity extends AppCompatActivity {
       Player player = new Player();
       player.name = (String) user.get("name");
       player.monster = (String) user.get("monster");
-//      player.hp = Integer.parseInt((String) user.get("hp"));
-//      player.vp = Integer.parseInt((String) user.get("vp"));
       player.hp = ((Long) user.get("hp")).intValue();
       player.vp = ((Long) user.get("vp")).intValue();
       players.add(player);

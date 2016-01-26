@@ -1,46 +1,63 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_start_root"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".StartActivity">
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
+  <LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center_horizontal|top">
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|top">
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginTop="20dp">
-            <EditText
-                android:id="@+id/activity_start_playerInput"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/button_height"
-                android:gravity="center_horizontal|bottom"
-                android:maxLength="14"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:layout_marginStart="8dp"
-                android:text="@string/player_name"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-        </FrameLayout>
+        android:layout_height="@dimen/input_height"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"  >
+      <EditText
+          android:id="@+id/activity_start_playerInput"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center_horizontal|bottom"
+          android:maxLength="14"/>
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="start"
+          android:text="@string/player_name"
+          android:textAppearance="?android:attr/textAppearanceSmall"/>
+    </FrameLayout>
 
-        <com.gamesmith.scoreboard.start.CreateOrJoinView
-            android:id="@+id/activity_start_createOrJoinView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
-    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="@string/monster"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="28dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/activity_start_monsterChooser"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="12dp">
+    </android.support.v4.view.ViewPager>
+
+    <com.gamesmith.scoreboard.start.CreateOrJoinView
+        android:id="@+id/activity_start_createOrJoinView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+  </LinearLayout>
 </FrameLayout>

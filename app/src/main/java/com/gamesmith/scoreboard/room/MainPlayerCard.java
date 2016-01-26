@@ -1,6 +1,7 @@
 package com.gamesmith.scoreboard.room;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,7 +134,7 @@ public class MainPlayerCard extends LinearLayout {
 
       Monster monster = getItem(position);
       ((ImageView) convertView.findViewById(R.id.spinner_item_dropdown_monster_imageView))
-          .setImageDrawable(this.getContext().getDrawable(monster.getSmallImageResId()));
+          .setImageDrawable(ContextCompat.getDrawable(this.getContext(), monster.getImageResId()));
       ((TextView) convertView.findViewById(R.id.spinner_item_dropdown_monster_textView)).setText(monster.getName());
 
       return convertView;
@@ -148,7 +149,7 @@ public class MainPlayerCard extends LinearLayout {
 
       Monster monster = getItem(position);
       ((ImageView) convertView.findViewById(R.id.spinner_item_monster_imageView))
-          .setImageDrawable(this.getContext().getDrawable(monster.getLargeImageResId()));
+          .setImageDrawable(ContextCompat.getDrawable(this.getContext(), monster.getImageResId()));
 
       return convertView;
     }

@@ -2,11 +2,23 @@ package com.gamesmith.scoreboard.start;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -22,6 +34,7 @@ import com.gamesmith.scoreboard.common.Constants;
 import com.gamesmith.scoreboard.R;
 import com.gamesmith.scoreboard.room.RoomActivity;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -31,12 +44,18 @@ import java.util.Random;
 public class StartActivity extends Activity {
   private static final String TAG = StartActivity.class.getSimpleName();
 
+  // For a quick and dirty "infinite" pager
+  private static final int BIG_NUMBER = Monster.values().length * 999999;
+  private static final int MIDDLE_NUMBER = BIG_NUMBER / 2;
+
   private Firebase mFirebase;
   private List<String> mDefaultNames;
   private Random mRandom;
   private int mJoiningPlayerId;
+  private Monster mSelectedMonster;
 
   private EditText mPlayerInput;
+  private ViewPager mMonsterChooser;
 
   ProgressDialog mProgressDialog;
 
@@ -51,8 +70,34 @@ public class StartActivity extends Activity {
     mRandom = new Random();
 
     mPlayerInput = (EditText) findViewById(R.id.activity_start_playerInput);
+    mMonsterChooser = (ViewPager) findViewById(R.id.activity_start_monsterChooser);
 
-    mPlayerInput.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
+    mPlayerInput.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+
+    mMonsterChooser.setAdapter(new MonsterPagerAdapter(this));
+    int padding = this.getResources().getDimensionPixelOffset(R.dimen.view_pager_padding);
+    mMonsterChooser.setHorizontalFadingEdgeEnabled(true);
+    mMonsterChooser.setFadingEdgeLength(padding);
+    mMonsterChooser.setCurrentItem(MIDDLE_NUMBER + (new Random()).nextInt(Monster.values().length));
+    mSelectedMonster = Monster.values()[mMonsterChooser.getCurrentItem() % Monster.values().length];
+    mMonsterChooser.setOffscreenPageLimit(5);
+
+    mMonsterChooser.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+      @Override
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // Do nothing.
+      }
+
+      @Override
+      public void onPageSelected(int position) {
+        mSelectedMonster = Monster.values()[position % Monster.values().length];
+      }
+
+      @Override
+      public void onPageScrollStateChanged(int state) {
+        // Do nothing.
+      }
+    });
 
     mDefaultNames = NameProvider.getNames(this);
     setRandomName();
@@ -155,7 +200,7 @@ public class StartActivity extends Activity {
   private Player getNewUser() {
     Player newPlayer = new Player();
     newPlayer.name = mPlayerInput.getText().toString();
-    newPlayer.monster = Monster.values()[mRandom.nextInt(Monster.values().length)].getName();
+    newPlayer.monster = mSelectedMonster.getName();
     newPlayer.hp = Constants.STARTING_HP;
     newPlayer.vp = Constants.STARTING_VP;
     return newPlayer;
@@ -185,5 +230,80 @@ public class StartActivity extends Activity {
   public void on(RoomNumberInput.RoomNumberInputFinishedEvent event) {
     Log.d(TAG, "on(RoomNumberInput.RoomNumberInputFinishedEvent()");
     joinRoom(event.roomNumber);
+  }
+
+  private class MonsterPagerAdapter extends PagerAdapter {
+    private Context mContext;
+
+    public MonsterPagerAdapter(Context context) {
+      mContext = context;
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+      Monster monster = Monster.values()[position % Monster.values().length];
+
+//      View view = LayoutInflater.from(mContext).inflate(R.layout.spinner_item_dropdown_monster, container);
+//      ((ImageView) view.findViewById(R.id.spinner_item_dropdown_monster_imageView))
+//          .setImageDrawable(ContextCompat.getDrawable(mContext, monster.getImageResId()));
+//      ((TextView) view.findViewById(R.id.spinner_item_dropdown_monster_textView)).setText(monster.getName());
+//      int padding = mContext.getResources().getDimensionPixelOffset(R.dimen.image_padding);
+//      view.setPadding(padding, padding, padding, padding);
+//      container.addView(view);
+//      return view;
+
+      ImageView imageView = new ImageView(mContext);
+      imageView.setLayoutParams(new ViewGroup.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT,
+          ViewGroup.LayoutParams.MATCH_PARENT));
+      int padding = mContext.getResources().getDimensionPixelOffset(R.dimen.image_padding);
+
+      imageView.setPadding(padding, padding, padding, padding);
+      imageView.setImageDrawable(ContextCompat.getDrawable(mContext, monster.getImageResId()));
+      container.addView(imageView);
+      return imageView;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+      unbindDrawables((View) object);
+      container.removeView((View) object);
+    }
+
+    @Override
+    public int getCount() {
+      return BIG_NUMBER;
+    }
+
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+      return view == object;
+    }
+
+//    @Override public float getPageWidth(int position) {
+//      return(0.5f);
+//    }
+
+
+
+    private void unbindDrawables(View view) {
+      if (view.getBackground() != null) {
+        view.getBackground().setCallback(null);
+      }
+
+      if (view instanceof ImageView) {
+        ImageView imageView = (ImageView) view;
+        imageView.setImageBitmap(null);
+      } else if (view instanceof ViewGroup) {
+        ViewGroup viewGroup = (ViewGroup) view;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+          unbindDrawables(viewGroup.getChildAt(i));
+        }
+
+        if (!(view instanceof AdapterView)) {
+          viewGroup.removeAllViews();
+        }
+      }
+    }
   }
 }

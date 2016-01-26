@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/scoreboard-android.iml" filepath="$PROJECT_DIR$/scoreboard-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/monster-board-android.iml" filepath="$PROJECT_DIR$/monster-board-android.iml" />
     </modules>
   </component>
 </project>
