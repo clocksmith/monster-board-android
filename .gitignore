@@ -1,7 +1,17 @@
+# Android Studio
+.idea
+*.iml
+/build
 .gradle
 /local.properties
-/.idea/**
-*.iml
+
+# Built files
+.apk
+*.ap_
+
+# Generated files
+bin/
+gen/
+
+# Max OSX
 .DS_Store
-/build
-/captures
