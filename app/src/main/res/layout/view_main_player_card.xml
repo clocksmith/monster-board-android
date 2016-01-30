@@ -19,7 +19,7 @@
         android:gravity="center"
         android:textSize="@dimen/main_player_text_size"
         android:padding="8dp"
-        android:textColor="@color/user_name_color"/>
+        android:textColor="@color/player_name_color"/>
     <Spinner
         style="@style/SpinnerAsEditText"
         android:id="@+id/view_main_player_card_monsterSpinner"
@@ -69,7 +69,7 @@
       android:gravity="center"
       android:orientation="vertical"
       android:padding="@dimen/default_padding">
-    <com.gamesmith.scoreboard.room.VpNumberPicker
+    <com.gamesmith.monsterboard.room.VpNumberPicker
         android:id="@+id/view_main_player_card_vp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -77,7 +77,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_padding"/>
-    <com.gamesmith.scoreboard.room.HpNumberPicker
+    <com.gamesmith.monsterboard.room.HpNumberPicker
         android:id="@+id/view_main_player_card_hp"
         android:layout_width="match_parent"
         android:layout_height="0dp"

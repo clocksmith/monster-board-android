@@ -37,7 +37,7 @@
 
   <color name="main_card_background_color">@color/primary_color_dark</color>
   <color name="small_card_background_color">@color/primary_color_dark</color>
-  <color name="user_name_color">@color/accent_color</color>
+  <color name="player_name_color">@color/accent_color</color>
   <color name="monster_name_color">@color/primary_color_light</color>
   <color name="hp_color">#F44336</color>
   <color name="vp_color">#2196F3</color>

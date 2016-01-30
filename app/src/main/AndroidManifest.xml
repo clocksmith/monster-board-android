@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gamesmith.scoreboard" >
+          package="com.gamesmith.monsterboard" >
 
-    <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.INTERNET" />
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name">
-        <activity
-            android:name=".start.StartActivity"
-            android:label="@string/app_name"
-            android:theme="@style/ScoreboardTheme"
-            android:noHistory="true"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+  <application
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:largeHeap="true">
+    <activity
+        android:name=".start.StartActivity"
+        android:label="@string/app_name"
+        android:theme="@style/ScoreboardTheme"
+        android:launchMode="singleTop"
+        android:screenOrientation="portrait">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    <activity
+        android:name=".room.RoomActivity"
+        android:parentActivityName=".start.StartActivity"
+        android:theme="@style/ScoreboardTheme"
+        android:screenOrientation="portrait">
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value=".start.StartActivity"/>
+    </activity>
 
-        <activity
-            android:name=".room.RoomActivity"
-            android:theme="@style/ScoreboardTheme"
-            android:noHistory="true"
-            android:screenOrientation="portrait">
-        </activity>
-    </application>
+    <activity
+        android:name=".extra.BeatpadActivity"
+        android:parentActivityName=".start.StartActivity"
+        android:theme="@style/ScoreboardTheme"
+        android:screenOrientation="landscape">
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value=".start.StartActivity"/>
+    </activity>
+  </application>
 
 </manifest>

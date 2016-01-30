@@ -13,18 +13,28 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:gravity="center_horizontal|top">
+    <com.gamesmith.monsterboard.start.CreateOrJoinView
+        android:id="@+id/activity_start_createOrJoinView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/input_height"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"  >
+        android:layout_marginRight="@dimen/activity_horizontal_margin">
       <EditText
           android:id="@+id/activity_start_playerInput"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:gravity="center_horizontal|bottom"
+          android:inputType="textFilter|textNoSuggestions"
           android:maxLength="14"/>
       <TextView
           android:layout_width="match_parent"
@@ -37,12 +47,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginLeft="10dp"
         android:gravity="start"
         android:text="@string/monster"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_marginTop="28dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
-
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
     <android.support.v4.view.ViewPager
         android:id="@+id/activity_start_monsterChooser"
         android:layout_width="match_parent"
@@ -50,14 +59,5 @@
         android:layout_weight="1"
         android:layout_marginTop="12dp">
     </android.support.v4.view.ViewPager>
-
-    <com.gamesmith.scoreboard.start.CreateOrJoinView
-        android:id="@+id/activity_start_createOrJoinView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
   </LinearLayout>
 </FrameLayout>
