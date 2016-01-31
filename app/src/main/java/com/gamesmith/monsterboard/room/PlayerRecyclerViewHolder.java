@@ -1,6 +1,7 @@
 package com.gamesmith.monsterboard.room;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,10 +43,11 @@ public class PlayerRecyclerViewHolder extends RecyclerView.ViewHolder {
 
   public void updatePlayerData(Player player) {
     mPlayerName.setText(player.getName());
-    mMonsterImage.setImageDrawable(mContext.getDrawable(Monster.getEnum(player.getMonster()).getSmallImageResId()));
+    mMonsterImage.setImageDrawable(ContextCompat.getDrawable(mContext,
+        Monster.getEnum(player.getMonster()).getSmallImageResId()));
     mMonsterName.setText(player.getMonster());
-    updatePointText(mHp, mVpIcon, player.getHp().intValue());
-    updatePointText(mVp, mHpIcon, player.getVp().intValue());
+    updatePointText(mHp, mHpIcon, player.getHp().intValue());
+    updatePointText(mVp, mVpIcon, player.getVp().intValue());
   }
 
   private void updatePointText(TextView pointTextView, ImageView iconView, int newValue) {
