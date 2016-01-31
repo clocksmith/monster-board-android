@@ -10,7 +10,7 @@ public class Constants {
 
   // Room number constants
   public static final int NUM_ROOM_NUMBER_DIGITS = 6;
-  public static final int MIN_ROOM_NUMBER = (int) Math.pow(10, NUM_ROOM_NUMBER_DIGITS);
+  public static final int MIN_ROOM_NUMBER = (int) Math.pow(10, NUM_ROOM_NUMBER_DIGITS - 1);
   public static final int MAX_ROOM_NUMBER = MIN_ROOM_NUMBER * 10 - 1;
 
   // Nvp keys
