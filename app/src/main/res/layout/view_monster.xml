@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <ImageView
+      android:id="@+id/view_monster_imageView"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"/>
+  <TextView
+      android:id="@+id/view_monster_monsterName"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textSize="@dimen/main_player_text_size"
+      android:padding="8dp"
+      android:textColor="@color/monster_name_color"/>
+  <TextView
+      android:id="@+id/view_monster_monsterSource"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:padding="8dp"
+      android:textColor="@color/player_name_color"/>
+</LinearLayout>
